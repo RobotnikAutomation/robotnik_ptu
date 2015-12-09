@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- Launch RGBD here ¿? -->
+
+  <!-- launch dynamixel servo controller -->
+  <include file="$(find robotnik_ptu)/launch/start_meta_controller.launch"/>
+  <include file="$(find robotnik_ptu)/launch/controller_manager.launch"/>  
+
+  <!-- ptu node -->
+  <node name="robotnik_ptu" pkg="robotnik_ptu" type="robotnik_ptu" output="screen"/>
+  <!-- debug -->
+  <!-- node name="robotnik_ptu" pkg="robotnik_ptu" type="robotnik_ptu" launch-prefix="gdb -ex run - -args"/ -->
+
+</launch>
+

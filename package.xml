@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<package>
+  <name>robotnik_ptu</name>
+  <version>0.0.0</version>
+  <description>The robotnik_ptu package (pan-tilt unit with dynamixel standard servos)</description>
+
+  <maintainer email="info@robotnik.es">Robotnik</maintainer>
+
+  <license>BSD</license>
+
+  <!-- <url type="website">http://wiki.ros.org/robotnik_ptu</url> -->
+  <!-- Author tags are optional, mutiple are allowed, one per tag -->
+  <author email="info@robotnik.es">Robotnik</author> 
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>diagnostic_updater</build_depend>
+  <build_depend>dynamixel_msgs</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>self_test</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>std_srvs</build_depend>
+  <build_depend>tf</build_depend>
+  <run_depend>diagnostic_updater</run_depend>
+  <run_depend>dynamixel_msgs</run_depend>
+  <run_depend>roscpp</run_depend>
+  <run_depend>self_test</run_depend>
+  <run_depend>sensor_msgs</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <run_depend>std_srvs</run_depend>
+  <run_depend>tf</run_depend>
+
+  <export>
+  </export>
+</package>
