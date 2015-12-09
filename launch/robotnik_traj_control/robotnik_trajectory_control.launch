@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!-- Launch for the trajectory simulation -->
+<launch>
+		
+    <!-- Configuration of every interface -->
+    <rosparam command="load" file="$(find robotnik_ptu)/config/robotnik_trajectory_control/robotnik_ptu_interfaces.yaml" />
+    <!-- Combine joint values -->
+	<node name="rt_traj_exe" pkg="robotnik_trajectory_control" type="rt_traj_exe.py" output="screen">
+		<remap from="joint_states" to="/joint_states"/>
+		<param name="error_joint_position" value="0.05"/>
+		<param name="desired_freq" value="5.0"/>
+		<!-- param name="joint_lookahead" value="0.05"/ -->
+		<param name="joint_lookahead" value="0.06"/>
+		<param name="joint_read_state_timeout" type="double" value="0.25"/>
+        <!-- if any joint is not moving within this time window it will cancel the trajectory -->
+		<param name="joint_no_movement_timeout" value="2.0"/>
+				<!-- Do not apply acceleration curve to the joint -->
+		<param name="ignore_acceleration" value="false"/>
+
+	</node>
+	
+</launch> 
