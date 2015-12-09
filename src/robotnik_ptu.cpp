@@ -160,13 +160,13 @@ int set_pos_rad( double radpos_pan, double radpos_tilt )
 	cmd_pan_pos_pub_.publish(float64_msg);	
 	
 	// Publish the tilt message
-	refrad = radpos_pan;
+	refrad = radpos_tilt;
 	if (refrad > TILT_ANGLE_MAX_RAD) refrad = TILT_ANGLE_MAX_RAD;
 	if (refrad < TILT_ANGLE_MIN_RAD) refrad = TILT_ANGLE_MIN_RAD;
 	float64_msg.data = refrad;
 	cmd_tilt_pos_pub_.publish(float64_msg);
 	
-	//ROS_INFO("SET_POS_RAD : %5.2f", refrad);
+	// ROS_INFO("SET_POS_RAD : %5.2f ", refrad);
 }
 
 /*!	\fn int robotnik_ptu_node::start()
@@ -231,7 +231,7 @@ void jointCommandCallback(const sensor_msgs::JointStateConstPtr& joint_cmd)
 		has_pos = true;
     if (!has_pos && (joint_cmd->velocity.size() > 0))
         ROS_ERROR("PTU Cannot be controlled in speed mode");
-    if (joint_cmd->effort.size() > 0) 
+    if (!has_pos && (joint_cmd->effort.size() > 0))
         ROS_ERROR("PTU Dynamixel servos do not accept torque references");
 
 	// Set commanded positions 
@@ -336,12 +336,12 @@ int read_and_publish()
 
     // Joint velocities
     joint_state.velocity.resize(2);
-    joint_state.velocity[0] = 0.0;   // could be converted from motor_state speed, but don't know how
+    joint_state.velocity[0] = 0.0;   // could be converted from motor_state speed (supposed grad/s) 
     joint_state.velocity[1] = 0.0;   
 
     // Joint torques
     joint_state.effort.resize(2);
-    joint_state.effort[0] = 0.0;	// could be converted from motor_state loads, but don't know how
+    joint_state.effort[0] = 0.0;	// 
     joint_state.effort[1] = 0.0;
 
 	joint_states_publisher_.publish( joint_state );
