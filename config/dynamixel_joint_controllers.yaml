@@ -1,9 +1,9 @@
-pan_controller:
+ptu1_pan_controller:
     controller:
         package: dynamixel_controllers
         module: joint_position_controller
         type: JointPositionController
-    joint_name: pan_joint
+    joint_name: ptu1_joint_1
     joint_speed: 0.25
     motor:
         id: 1
@@ -11,15 +11,44 @@ pan_controller:
         min:  0
         max:  4095
 
-tilt_controller:
+ptu1_tilt_controller:
     controller:
         package: dynamixel_controllers
         module: joint_position_controller
         type: JointPositionController
-    joint_name: tilt_joint
+    joint_name: ptu1_joint_2
     joint_speed: 0.25
     motor:
         id: 2
         init: 2048
         min: 0
         max: 4095
+
+ptu2_pan_controller:
+    controller:
+        package: dynamixel_controllers
+        module: joint_position_controller
+        type: JointPositionController
+    joint_name: ptu2_joint_1
+    joint_speed: 0.25
+    motor:
+        id: 3
+        init: 2048
+        min:  0
+        max:  4095
+
+ptu2_tilt_controller:
+    controller:
+        package: dynamixel_controllers
+        module: joint_position_controller
+        type: JointPositionController
+    joint_name: ptu2_joint_2
+    joint_speed: 0.25
+    motor:
+        id: 4
+        init: 2048
+        min: 0
+        max: 4095
+
+
+  

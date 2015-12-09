@@ -8,7 +8,7 @@
   <include file="$(find robotnik_ptu)/launch/controller_manager.launch"/>  
 
   <!-- ptu node -->
-  <node name="robotnik_ptu" pkg="robotnik_ptu" type="robotnik_ptu" output="screen"/>
+  <!-- node name="robotnik_ptu" pkg="robotnik_ptu" type="robotnik_ptu" output="screen"/ -->
   <!-- debug -->
   <!-- node name="robotnik_ptu" pkg="robotnik_ptu" type="robotnik_ptu" launch-prefix="gdb -ex run - -args"/ -->
 
