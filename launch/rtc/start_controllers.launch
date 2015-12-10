@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- Start all joint controllers -->
+    <rosparam file="$(find robotnik_ptu)/config/dynamixel_joint_controllers.yaml" command="load"/>
+    
+    <node name="controller_spawner" pkg="dynamixel_controllers" type="controller_spawner.py"
+          args="--manager=dxl_manager
+                --port pan_tilt_port
+                ptu1_pan_controller                       
+                ptu1_tilt_controller
+                ptu2_pan_controller
+                ptu2_tilt_controller
+                "
+          output="screen"/>
+          
+</launch>

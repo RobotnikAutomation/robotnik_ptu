@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<launch>
+	
+  <!-- This launch file launches the ptu controller using the action server for JointTrajectoryAction provided by Dynamixel -->
+  <!-- It needs to manage trajectories for all servos connected to the same bus -->
+
+  <!-- launch dynamixel servo controller and meta controller -->
+  <include file="$(find robotnik_ptu)/launch/start_meta_controller.launch"/>
+  <include file="$(find robotnik_ptu)/launch/controller_manager.launch"/>  
+
+</launch>
+

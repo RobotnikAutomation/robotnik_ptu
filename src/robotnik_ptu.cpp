@@ -63,17 +63,17 @@ public:
 	ros::Time last_command_time;									// Last moment when the component received a command
         diagnostic_updater::FunctionDiagnosticTask command_freq_;
 
-	// Current axis position in rad
+	//! Current axis positions in rad and motor states
 	double position_pan_rad_;
 	double position_tilt_rad_;	
 	dynamixel_msgs::MotorState motor_state_pan_;
 	dynamixel_msgs::MotorState motor_state_tilt_;
 	
-	// Subscriber
+	//! Subscribers
 	ros::Subscriber read_pos_sub_;      // motor states
 	ros::Subscriber joint_command_subscriber_; // commands received 
 	
-	// Publisher
+	//! Publishers
 	ros::Publisher cmd_pan_pos_pub_;	// command to pan controller
 	ros::Publisher cmd_tilt_pos_pub_;   // command to tilt controller
 	ros::Publisher joint_states_publisher_; // joint states 
@@ -82,13 +82,19 @@ public:
 	//! Node running
 	bool running;	
 
-	// Error counters and flags
+	//! Error counters and flags
 	std::string was_slow_;
 	std::string error_status_;
-	
-	//! Mutex for controlling the changes and access to 
-	// pthread_mutex_t mutex_position;
 
+    //! Controller cmd topics, joint_state names and joint ids
+    std::string pan_cmd_topic_;
+    std::string tilt_cmd_topic_;
+    std::string pan_joint_name_;
+    std::string tilt_joint_name_;
+    double pan_id_;
+    double tilt_id_;
+    
+    
 /*!	\fn robotnik_ptu_node::robotnik_ptu_node()
  * 	\brief Public constructor
 */
@@ -109,9 +115,17 @@ robotnik_ptu_node(ros::NodeHandle h) : self_test_(), diagnostic_(),
     joint_command_subscriber_ = robotnik_ptu_node_handle.subscribe("in/joint_commands", 1,
                                                       &robotnik_ptu_node::jointCommandCallback, this);
 
+    // Parameters
+    private_node_handle_.param<std::string>("pan_cmd_topic", pan_cmd_topic_, "/pan_controller/command");
+    private_node_handle_.param<std::string>("tilt_cmd_topic", tilt_cmd_topic_, "/tilt_controller/command");
+    private_node_handle_.param<std::string>("pan_joint_name", pan_joint_name_, "pan_joint");
+    private_node_handle_.param<std::string>("tilt_joint_name", tilt_joint_name_, "tilt_joint");
+    private_node_handle_.param<double>("pan_id", pan_id_, 1);
+    private_node_handle_.param<double>("tilt_id", tilt_id_, 2);
+
     // Publishing
-    cmd_pan_pos_pub_ = private_node_handle_.advertise<std_msgs::Float64>("/pan_controller/command", 10 ); 
-    cmd_tilt_pos_pub_ = private_node_handle_.advertise<std_msgs::Float64>("/tilt_controller/command", 10 );     
+    cmd_pan_pos_pub_ = private_node_handle_.advertise<std_msgs::Float64>(pan_cmd_topic_, 10 ); 
+    cmd_tilt_pos_pub_ = private_node_handle_.advertise<std_msgs::Float64>(tilt_cmd_topic_, 10 );     
     joint_states_publisher_ = robotnik_ptu_node_handle.advertise<sensor_msgs::JointState>("/joint_states", 2);
 
     // Self test
@@ -127,10 +141,9 @@ robotnik_ptu_node(ros::NodeHandle h) : self_test_(), diagnostic_(),
 	position_tilt_rad_= 0.0;
 
     joint_names_.resize(2);
-    joint_names_[0] = "ptu1_joint_1"; //node_name_ + "_joint_1";
-    joint_names_[1] = "ptu1_joint_2"; // node_name_ + "_joint_2";
+    joint_names_[0] = pan_joint_name_;    //node_name_ + "_joint_1";
+    joint_names_[1] = tilt_joint_name_;  
 
- 
     ROS_INFO("Desired freq %5.2f", desired_freq_);
 
 }
@@ -207,15 +220,19 @@ void MotorStateCallback(const dynamixel_msgs::MotorStateList::ConstPtr& motor_st
 	
 	int32_t id, goal, position;
 	
-	// TODO - Check conversions according to servo
-	motor_state_pan_ = motor_state_list->motor_states[0];	
-	position = motor_state_pan_.position;
-	position_pan_rad_ = (((double) position - 2048.0) / 1024.0) * 1.570796327;   
-	
-	motor_state_tilt_ = motor_state_list->motor_states[1];	
-	position = motor_state_tilt_.position;
-	position_tilt_rad_ = (((double) position - 2048.0) / 1024.0) * 1.570796327;   	
-  	
+	for (int i=0;i<motor_state_list->motor_states.size(); i++) {
+		// Conversions done for MX-28
+		if (motor_state_list->motor_states[i].id == (int) pan_id_ ) {		
+			motor_state_pan_ = motor_state_list->motor_states[i];	
+			position = motor_state_pan_.position;
+			position_pan_rad_ = (((double) position - 2048.0) / 1024.0) * 1.570796327;
+			}
+		if (motor_state_list->motor_states[i].id == (int) tilt_id_ ) {
+			motor_state_tilt_ = motor_state_list->motor_states[i];	
+			position = motor_state_tilt_.position;
+			position_tilt_rad_ = (((double) position - 2048.0) / 1024.0) * 1.570796327;   	
+			}
+		}
 }
 
 /*!     \fn void robotnik_ptu::jointCommandCallback(const dynamixel_msgs::MotorStateList::ConstPtr& motor_state_list)
@@ -225,7 +242,12 @@ void jointCommandCallback(const sensor_msgs::JointStateConstPtr& joint_cmd)
 {
     // sensor_msgs::JointState joint_commands = *joint_cmd;     
     bool has_pos;
-       
+    int index_pan = -1;
+    int index_tilt = -1;
+    
+    // If command is not correct, return
+    if (joint_cmd->name.size()==0) return;
+    
     // Check that position references have arrived
     if (joint_cmd->position.size() > 0) 
 		has_pos = true;
@@ -234,10 +256,42 @@ void jointCommandCallback(const sensor_msgs::JointStateConstPtr& joint_cmd)
     if (!has_pos && (joint_cmd->effort.size() > 0))
         ROS_ERROR("PTU Dynamixel servos do not accept torque references");
 
+	// As there might be several nodes running in parallel, check if the command is for this node.	
+    for (int i = 0; i < joint_cmd->name.size(); i++) {
+        std::string name = joint_cmd->name[i];
+        if (name == pan_joint_name_) index_pan = i;
+        if (name == tilt_joint_name_) index_tilt = i;
+		}
+
 	// Set commanded positions 
 	if (has_pos) {
-	   set_pos_rad( joint_cmd->position[0], joint_cmd->position[1] );
-       }	
+		
+		// Current time
+		ros::Time current_time = ros::Time::now();
+
+		// Create msg
+		std_msgs::Float64 float64_msg;
+
+	    // If joint_cmd has pan joint of this node
+	    if (index_pan != -1) {	  
+			// Publish the pan message
+			double refrad = joint_cmd->position[index_pan];
+			if (refrad > PAN_ANGLE_MAX_RAD) refrad = PAN_ANGLE_MAX_RAD;
+			if (refrad < PAN_ANGLE_MIN_RAD) refrad = PAN_ANGLE_MIN_RAD;
+			float64_msg.data = refrad;		
+			cmd_pan_pos_pub_.publish(float64_msg);	
+			}
+	
+	    // If joint_cmd has tilt joint of this node
+		if (index_tilt != -1) {
+			// Publish the tilt message
+			double refrad = joint_cmd->position[index_tilt];
+			if (refrad > TILT_ANGLE_MAX_RAD) refrad = TILT_ANGLE_MAX_RAD;
+			if (refrad < TILT_ANGLE_MIN_RAD) refrad = TILT_ANGLE_MIN_RAD;
+			float64_msg.data = refrad;
+			cmd_tilt_pos_pub_.publish(float64_msg);
+			}	   
+		}
 }
 
 /*!	\fn robotnik_ptu_node::ConnectTest()
