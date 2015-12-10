@@ -2,10 +2,20 @@
 # Define the different types of interfaces
 types: [ gazebo_position, standard ]
 
+#groups: {  
+ #ptu1: { name: ptu1, type: standard, joints: [ptu1_joint_1, ptu1_joint_2], command_topic: /robotnik_ptu_node/in/joint_commands},
+ #ptu2: { name: ptu2, type: standard, joints: [ptu2_joint_1, ptu2_joint_2], command_topic: /robotnik_ptu_node/in/joint_commands},
+ #ptu: { name: ptu, type: standard, joints: [ptu1_joint_1, ptu1_joint_2, ptu2_joint_1, ptu2_joint_2], command_topic: /robotnik_ptu_node/in/joint_commands}
+ #torso_head: { name: torso_head, type: standard, joints: [j1_torso, j1_head, j2_head], command_topic: /joint_commands}
+ #base
+#}
+
 groups: {  
- ptu1: { name: ptu1, type: standard, joints: [ptu1_joint_1, ptu1_joint_2], command_topic: /robotnik_ptu_node/in/joint_commands},
- ptu2: { name: ptu2, type: standard, joints: [ptu2_joint_1, ptu2_joint_2], command_topic: /robotnik_ptu_node/in/joint_commands},
- ptu: { name: ptu, type: standard, joints: [ptu1_joint_1, ptu1_joint_2, ptu2_joint_1, ptu2_joint_2], command_topic: /robotnik_ptu_node/in/joint_commands}
+ ptu1_pan: { name: ptu1_pan, type: gazebo_position, joints: [ptu1_joint_1], command_topic: /ptu1_pan_controller/command},
+ ptu1_tilt: { name: ptu1_tilt, type: gazebo_position, joints: [ptu1_joint_2], command_topic: /ptu1_tilt_controller/command},
+ ptu2_pan: { name: ptu2_pan, type: gazebo_position, joints: [ptu2_joint_1], command_topic: /ptu2_pan_controller/command},
+ ptu2_tilt: { name: ptu2_tilt, type: gazebo_position, joints: [ptu2_joint_2], command_topic: /ptu2_tilt_controller/command},
+ #ptu: { name: ptu, type: standard, joints: [ptu1_joint_1, ptu1_joint_2, ptu2_joint_1, ptu2_joint_2], command_topic: /robotnik_ptu_node/in/joint_commands}
  #torso_head: { name: torso_head, type: standard, joints: [j1_torso, j1_head, j2_head], command_topic: /joint_commands}
  #base
 }
