@@ -1,16 +1,14 @@
 <?xml version="1.0"?>
 <launch>
 
-  <!-- Launch RGBD here ¿? -->
+  <!-- Launch RGBD -->
+  <include file="$(find robotnik_ptu)/launch/xtion_rgbd.launch"/>
 
-  <!-- launch dynamixel servo controller -->
-  <include file="$(find robotnik_ptu)/launch/start_meta_controller.launch"/>
-  <include file="$(find robotnik_ptu)/launch/controller_manager.launch"/>  
+  <!-- launch PTU RTC for controlling the axes via the robotnik rt_traj_exe (much better) -->
+  <include file="$(find robotnik_ptu)/launch/rtc/robotnik_ptu_rtc.launch"/>
 
-  <!-- ptu node -->
-  <!-- node name="robotnik_ptu" pkg="robotnik_ptu" type="robotnik_ptu" output="screen"/ -->
-  <!-- debug -->
-  <!-- node name="robotnik_ptu" pkg="robotnik_ptu" type="robotnik_ptu" launch-prefix="gdb -ex run - -args"/ -->
+  <!-- launch PTU Dynamixel for controlling the axes via the dynamixel joint trajectory controller (accepts only trajs for all axes)-->
+  <!-- include file="$(find robotnik_ptu)/launch/dynamixel/robotnik_ptu_dynamixel.launch"/-->
 
 </launch>
 
