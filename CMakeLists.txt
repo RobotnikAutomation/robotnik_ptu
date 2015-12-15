@@ -69,7 +69,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  INCLUDE_DIRS include
+#  INCLUDE_DIRS include
 #  LIBRARIES robotnik_ptu
   CATKIN_DEPENDS diagnostic_updater dynamixel_msgs roscpp self_test sensor_msgs std_msgs std_srvs tf
   DEPENDS system_lib
