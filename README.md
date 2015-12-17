@@ -53,3 +53,18 @@ If checksum errors or wrong packet prefix errors arise, this is usually caused b
 [ERROR] [WallTime: 1449485293.211449] Exception thrown while getting attributes for motor 2 - Invalid response received from motor 2. Wrong packet prefix ['\xfd', '\xff']
 [ERROR] [WallTime: 1449485293.215802] Exception thrown while getting attributes for motor 2 - Invalid response received from motor 2. Wrong packet prefix ['\x7f', '\xfe']
 
+
+Startup with
+
+Simulation:
+>roslaunch summit_xl_gazebo summit_xl_hls_omni.launch
+Launch rt_traj_exe
+>roslaunch summit_xl_sim_bringup gazebo_trajectory_control.launch 
+Launch moveit
+>roslaunch summit_xl_moveit demo_rtc.launch simulation:=true
+
+Real:
+>roslaunch robotnik_ptu robotnik_ptu.launch
+>roslaunch robotnik_ptu robotnik_trajectory_control.launch
+>roslaunch summit_xl_moveit demo_rtc.launch
+
