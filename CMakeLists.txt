@@ -97,16 +97,16 @@ include_directories(
 # add_dependencies(robotnik_ptu ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-#add_executable(robotnik_ptu src/robotnik_ptu.cpp)
+add_executable(robotnik_ptu src/robotnik_ptu.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(robotnik_ptu_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-#target_link_libraries(robotnik_ptu
-#   ${catkin_LIBRARIES}
-#)
+target_link_libraries(robotnik_ptu
+   ${catkin_LIBRARIES}
+)
 
 #############
 ## Install ##

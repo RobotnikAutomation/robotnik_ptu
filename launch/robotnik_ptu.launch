@@ -2,7 +2,7 @@
 <launch>
 
   <!-- Launch RGBD -->
-  <include file="$(find robotnik_ptu)/launch/xtion_rgbd.launch"/>
+  <!-- include file="$(find robotnik_ptu)/launch/xtion_rgbd.launch"/ -->
 
   <!-- launch PTU RTC for controlling the axes via the robotnik rt_traj_exe (much better) -->
   <include file="$(find robotnik_ptu)/launch/rtc/robotnik_ptu_rtc.launch"/>

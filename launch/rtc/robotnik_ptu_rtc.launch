@@ -11,6 +11,21 @@
   <!-- launch trajectory action server rt_traj_exe -->
   <include file="$(find robotnik_ptu)/launch/rtc/robotnik_traj_control/robotnik_trajectory_control.launch"/>
 
+  <!-- ptu1 node -->
+  <node name="robotnik_ptu1" pkg="robotnik_ptu" type="robotnik_ptu" output="screen">
+	  <param name="pan_joint_name" value="ptu1_joint_1"/>
+	  <param name="tilt_joint_name" value="ptu1_joint_2"/>
+	  <param name="pan_id" value="1"/>
+	  <param name="tilt_id" value="2"/>
+  </node>
+
+  <!-- ptu2 node -->
+  <node name="robotnik_ptu2" pkg="robotnik_ptu" type="robotnik_ptu" output="screen">
+	  <param name="pan_joint_name" value="ptu2_joint_1"/>
+	  <param name="tilt_joint_name" value="ptu2_joint_2"/>
+	  <param name="pan_id" value="3"/>
+	  <param name="tilt_id" value="4"/>
+  </node>
 
 </launch>
 
